@@ -15,7 +15,7 @@ app.post("/generate-token", (req, res) => {
 });
 
 function generateToken() {
-  const token = crypto.randomBytes(16).toString("hex");
+  const token = crypto.randomBytes(8).toString("hex");
   return token;
 }
 
