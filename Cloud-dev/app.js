@@ -2,7 +2,6 @@ const express = require("express");
 const crypto = require("crypto");
 const app = express();
 const port = 3000;
-const bodyParser = require("body-parser");
 
 app.use(express.json());
 
@@ -20,17 +19,12 @@ function generateToken() {
   return token;
 }
 
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Serveur démarré sur http://0.0.0.0:${port}`);
+app.post("/receive_ip", (req, res) => {
+  const esp32IP = req.body.ip;
+  const token = generateToken(); // Générer un nouveau token pour cet IP spécifique
+  res.json({ ip: esp32IP, token: token });
 });
 
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// Point de terminaison POST pour recevoir l'adresse IP de l'ESP32
-app.post('/receive_ip', (req, res) => {
-const esp32IP = req.body.ip;
-// Envoyer le token en réponse
-res.send(token);
-// Vous pouvez enregistrer le token ou effectuer d'autres actions avec l'adresse IP
-// Par exemple, enregistrer le token avec l'adresse IP dans une base de données
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Serveur démarré sur http://0.0.0.0:${port}`);
 });
