@@ -1,19 +1,31 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Share, StyleSheet } from "react-native";
 import QRCode from "react-native-qrcode-svg";
+import ViewShot from "react-native-view-shot"; 
 
 const QRCodeDisplay = ({ route, navigation }) => {
   const { token } = route.params;
+
+  const viewShotRef = React.useRef();
+
   const shareQRCode = async () => {
     try {
+      
+      const imageUri = await viewShotRef.current.capture();
+
       const result = await Share.share({
-        message: `Voici mon QR Code : ${token}`,
+        message: `Voici mon QR Code :`,
+        url: imageUri, 
       });
+
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
+          
         } else {
+          
         }
       } else if (result.action === Share.dismissedAction) {
+        
       }
     } catch (error) {
       alert(error.message);
@@ -25,7 +37,9 @@ const QRCodeDisplay = ({ route, navigation }) => {
       <Text style={styles.title}>
         The QR-code has been successfully generated
       </Text>
-      <QRCode value={token} size={200} />
+      <ViewShot ref={viewShotRef} options={{ format: "jpg", quality: 0.9 }}>
+        <QRCode value={token} size={200} />
+      </ViewShot>
       <Text style={styles.subtitle}>You can now use it or share it</Text>
       <TouchableOpacity style={styles.shareButton} onPress={shareQRCode}>
         <Text style={styles.shareButtonText}>Share</Text>
@@ -46,7 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#000", // You can change this to the color you prefer
+    backgroundColor: "#000", 
   },
   title: {
     marginBottom: 20,
@@ -74,11 +88,11 @@ const styles = StyleSheet.create({
   backButton: {
     width: 100,
     position: "absolute",
-    right: 20, 
-    top: 90, 
-    backgroundColor: "rgba(255,255,255,0.3)", 
+    right: 20,
+    top: 90,
+    backgroundColor: "rgba(255,255,255,0.3)",
     padding: 10,
-    borderRadius: 30, 
+    borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
   },
