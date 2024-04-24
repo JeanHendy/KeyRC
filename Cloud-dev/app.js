@@ -3,8 +3,7 @@ const crypto = require("crypto");
 const app = express();
 const port = 3000;
 
-// Variable pour stocker le token
-let currentToken = null;
+let currentToken = null; // Variable pour stocker le dernier token généré
 
 app.use(express.json());
 
@@ -12,29 +11,19 @@ app.get("/", (req, res) => {
   res.send("Bienvenue sur KeyRC Cloud Server!");
 });
 
-// Point de terminaison pour générer et récupérer le token
+// Générer un nouveau token et le stocker
 app.post("/generate-token", (req, res) => {
-  // Générer un token seulement s'il n'existe pas déjà
-  if (!currentToken) {
-    currentToken = generateToken();
-  }
-  res.json({ token: currentToken });
+  currentToken = crypto.randomBytes(8).toString("hex"); // Générer un nouveau token
+  res.json({ token: currentToken }); // Envoyer ce nouveau token
 });
 
-function generateToken() {
-  return crypto.randomBytes(8).toString("hex");
-}
-
-// Point de terminaison pour récupérer le token existant
-app.post("/receive_ip", (req, res) => {
-  const esp32IP = req.body.ip;
-  // Assurez-vous qu'il y a un token existant à envoyer
-  if (!currentToken) {
-    return res
-      .status(404)
-      .send("Token not found. Please generate token first.");
+// Permettre à l'ESP32 de récupérer le dernier token généré
+app.get("/get-token", (req, res) => {
+  if (currentToken) {
+    res.json({ token: currentToken });
+  } else {
+    res.status(404).send("No token available. Generate token first.");
   }
-  res.json({ ip: esp32IP, token: currentToken });
 });
 
 app.listen(port, "0.0.0.0", () => {
