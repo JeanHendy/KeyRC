@@ -15,10 +15,8 @@ app.get("/", (req, res) => {
 
 // Générer un nouveau token et le stocker
 app.post("/generate-token", (req, res) => {
-  if (!currentToken) {
-    // Générer un token seulement s'il n'existe pas déjà
-    currentToken = generateToken();
-  }
+  // Générer un token à chaque fois que cette route est appelée
+  currentToken = generateToken();
   res.json({ token: currentToken });
 });
 
