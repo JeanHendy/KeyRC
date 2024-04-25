@@ -1,23 +1,20 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Share, StyleSheet } from "react-native";
 import QRCode from "react-native-qrcode-svg";
-import ViewShot from "react-native-view-shot"; 
+import ViewShot from "react-native-view-shot";
 
 const QRCodeDisplay = ({ route, navigation }) => {
   const { token } = route.params;
-
   const viewShotRef = React.useRef();
 
   const shareQRCode = async () => {
     try {
-      
       const imageUri = await viewShotRef.current.capture();
-
       const result = await Share.share({
         message: `Voici mon QR Code :`,
-        url: imageUri, 
+        url: imageUri,
       });
-
+      
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
           
@@ -37,8 +34,10 @@ const QRCodeDisplay = ({ route, navigation }) => {
       <Text style={styles.title}>
         The QR-code has been successfully generated
       </Text>
-      <ViewShot ref={viewShotRef} options={{ format: "jpg", quality: 0.9 }}>
-        <QRCode value={token} size={200} />
+      <ViewShot ref={viewShotRef} options={{ format: "png", quality: 0.9 }}>
+        <View style={styles.qrCodeContainer}>
+          <QRCode value={token} size={300} />
+        </View>
       </ViewShot>
       <Text style={styles.subtitle}>You can now use it or share it</Text>
       <TouchableOpacity style={styles.shareButton} onPress={shareQRCode}>
@@ -60,23 +59,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#000", 
+    backgroundColor: "#000",
   },
   title: {
-    marginBottom: 20,
-    color: "white",
+    marginBottom: 40,
+    color: "black",
     fontSize: 18,
   },
+  qrCodeContainer: {
+    padding: 50, 
+    backgroundColor: "#fff", 
+    borderRadius: 10, 
+  },
   subtitle: {
-    marginTop: 20,
-    color: "white",
+    marginTop: 40,
+    color: "black",
     fontWeight: "bold",
     fontSize: 16,
   },
   shareButton: {
     width: 100,
     marginTop: 50,
-    backgroundColor: "green", // You can change this to the color you prefer
+    backgroundColor: "green",
     padding: 10,
     borderRadius: 5,
   },

@@ -17,7 +17,6 @@ import QRCodeDisplay from './QRCodeDisplay'; //
 const Stack = createNativeStackNavigator();
 
 function HomeScreen({ navigation }) {
-  // Création d'un token pour le QR-code
   const [token, setToken] = useState("");
   const generateToken = () => {
     fetch("http://51.91.103.54:3000/generate-token", {
