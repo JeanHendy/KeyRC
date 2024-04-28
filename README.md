@@ -1,8 +1,3 @@
-Librairies utilisées :
-WiFi.h (1.2.7)
-HttpClient.h (0.6.0)
-quirc.h (1.2)
-
 Additionnal board manager
 https://dl.espressif.com/dl/package_esp32_index.json
 https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
