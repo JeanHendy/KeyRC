@@ -34,9 +34,9 @@ const QRCodeDisplay = ({ route, navigation }) => {
       <Text style={styles.title}>
         The QR-code has been successfully generated
       </Text>
-      <ViewShot ref={viewShotRef} options={{ format: "png", quality: 0.9 }}>
+      <ViewShot ref={viewShotRef} options={{format: "png"}}>
         <View style={styles.qrCodeContainer}>
-          <QRCode value={token} size={300} />
+          <QRCode value={token} size={200} />
         </View>
       </ViewShot>
       <Text style={styles.subtitle}>You can now use it or share it</Text>
@@ -62,8 +62,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   title: {
-    marginBottom: 40,
-    color: "black",
+    marginBottom: 20,
+    color: "green",
+    fontWeight: "bold",
+    textAlign: "center",
     fontSize: 18,
   },
   qrCodeContainer: {
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     marginTop: 40,
-    color: "black",
+    color: "white",
     fontWeight: "bold",
     fontSize: 16,
   },
