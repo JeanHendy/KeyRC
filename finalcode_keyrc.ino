@@ -126,6 +126,7 @@ String setupWiFiAndConnectToServer() {
       if (serverResponse.length() > 0) {
         // Vous pouvez ajouter ici votre logique pour traiter le token reçu
         Serial.println("Traitement du token...");
+        
       } else {
         Serial.println("Aucune réponse du serveur");
       }
@@ -139,23 +140,36 @@ String setupWiFiAndConnectToServer() {
 }
 
 void QRCodeReaderTask(void *pvParameters) {
-  struct quirc *q = quirc_new(); // Create quirc object only once
+  struct quirc *q = quirc_new();
   if (!q) {
     Serial.println("Failed to create quirc decoder object");
-    vTaskDelete(NULL); // Terminate task if object creation fails
+    vTaskDelete(NULL);
+    return;
   }
 
-  while (1) {
-    String decodedQRCode = captureAndDecodeQRCode(q); // Pass quirc object to function
+  while (true) { // Boucle principale
+    String decodedQRCode = captureAndDecodeQRCode(q);
     if (!decodedQRCode.isEmpty()) {
-      Serial.println("QR code decoded successfully. Preparing for next cycle...");
-      break; // Break loop if QR code is decoded successfully
+      Serial.println("QR code decoded: " + decodedQRCode);
+      if (decodedQRCode==setupWiFiAndConnectToServer()) { 
+        Serial.println("Valid QR code. Activating the strike...");
+        pinMode(RELAY_PIN,OUTPUT);
+        digitalWrite(RELAY_PIN, HIGH); // Activation de la gâche
+        delay(10000); // Durée de l'activation
+        digitalWrite(RELAY_PIN, LOW);
+        break; // Sortie de la boucle après activation
+      } else {
+        Serial.println("Invalid QR code. Please try again.");
+        // Ici vous pouvez ajouter un délai ou une logique pour réessayer après un certain temps
+      }
+    } else {
+      Serial.println("No QR code detected or camera capture failed.");
     }
-    vTaskDelay(2000 / portTICK_PERIOD_MS); // Reduce frequency of execution
+    vTaskDelay(5000 / portTICK_PERIOD_MS); // Attend 5 secondes avant de répéter
   }
 
-  quirc_destroy(q); // Destroy the quirc object only after task is concluded
-  vTaskDelete(NULL); // Properly delete the task
+  quirc_destroy(q);
+  vTaskDelete(NULL);
 }
 
 
@@ -192,7 +206,8 @@ String captureAndDecodeQRCode(struct quirc *q) {
       if (quirc_decode(&code, &data) == QUIRC_SUCCESS) {
         Serial.println("QR code decode: success");
         decodedQRCode = String((char *)data.payload);
-        break; // Break the loop on successful decode
+        
+        return decodedQRCode; // Break the loop on successful decode
       } else {
         Serial.println("QR code decode failed");
       }
@@ -208,7 +223,6 @@ String captureAndDecodeQRCode(struct quirc *q) {
     Serial.println("Timeout reached without detecting a QR code.");
   }
 
-  return decodedQRCode;
 }
 
 
@@ -225,23 +239,19 @@ void dumpData(const struct quirc_data *data){
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
+  pinMode(RELAY_PIN, OUTPUT);
   initializeCamera();
   serverToken = setupWiFiAndConnectToServer();
   xTaskCreatePinnedToCore(QRCodeReaderTask, "QRCodeReader_Task", 15000, NULL, 1, &QRCodeReader_Task, 0);
 }
 
 void loop() {
+  // La loop peut rester vide si QRCodeReaderTask gère tout.
+  delay(10000); // Cette ligne est juste pour soulager le CPU, facultatif si rien d'autre n'est fait.
 
-  delay(5000);
-  String decodedQRCode = captureAndDecodeQRCode(q);  // Now passing 'q' as required by the function signature.
-  
-  if (decodedQRCode != "" && serverToken != "" && decodedQRCode.equals(serverToken)) {
-    Serial.println("Les tokens sont identiques. Activation du relais...");
-    digitalWrite(RELAY_PIN, HIGH);
-    delay(1000);  // Relay activation time
-    digitalWrite(RELAY_PIN, LOW);
-  }
+  // Vous pouvez ajouter ici d'autres vérifications ou tâches de maintenance si nécessaire.
 }
+
 
 
 
