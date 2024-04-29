@@ -44,5 +44,5 @@ Unit tests for each API route can be performed using Insomnia REST to ensure the
 Contributors
 Odilon KIEMBA: Backend development.
 
-License
+#License
 This project is licensed under the MIT License - see the LICENSE file for details.
