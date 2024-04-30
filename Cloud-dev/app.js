@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
   });
 
 //Ajoute des données à la collection Administrators avec infos de la serrure(hypothèse faite pour 1ère connexion)
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.post('/api/KeyRC/admin', async (req, res) => {
     try {
         const admin= new Administrator(req.body.name, req.body.email, req.body.password)
@@ -48,7 +48,7 @@ startServer().then(({collection1, collection2, collection3}) => {
 })
 
 //Ajoute des données à la collection Locks
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.post('/api/KeyRC/lock/:id', async (req, res) => {
     try {
         const id=new ObjectId(req.params.id)
@@ -66,7 +66,7 @@ startServer().then(({collection1, collection2, collection3}) => {
 })
 
 //Ajoute des données à la collection Tokens
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.post('/generate-token', async (req, res) => {
     const token=generateToken()
     try {
@@ -85,7 +85,7 @@ startServer().then(({collection1, collection2, collection3}) => {
 
 
 //Affiche l'ensemble des données présentes dans la BD
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.get('/api/KeyRC/all-stuff', async (req, res) => {
         try {
             const Administrators_collection= await collection1.find().toArray()
@@ -107,7 +107,7 @@ startServer().then(({collection1, collection2, collection3}) => {
 })
 
 //Affiche l'ensemble des données d'un administrateur dont on connaît l'id
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.get('/api/KeyRC/stuff/:id', async (req, res) => {
         const id=new ObjectId(req.params.id)
         try {
@@ -131,7 +131,7 @@ startServer().then(({collection1, collection2, collection3}) => {
 
 
 //Modifie les données d'un administrateur 
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.put('/api/KeyRC/admin/:id', async (req, res) => {
         try {
             const id=new ObjectId(req.params.id)
@@ -152,7 +152,7 @@ startServer().then(({collection1, collection2, collection3}) => {
     process.exit(1) // Quitter le processus avec un code d'erreur
 })
 //Modifie les données d'un token 
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.put('/api/KeyRC/token/:id', async (req, res) => {
         try {
             const id=new ObjectId(req.params.id)
@@ -185,7 +185,7 @@ startServer().then(({collection1, collection2, collection3}) => {
     process.exit(1) // Quitter le processus avec un code d'erreur
 })
 //Modifie les données d'une serrure 
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.put('/api/KeyRC/lock/:id', async (req, res) => {
         try {
             const id=new ObjectId(req.params.id)
@@ -208,7 +208,7 @@ startServer().then(({collection1, collection2, collection3}) => {
 })
 
 //Supprime les données d'un administrateur 
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.delete('/api/KeyRC/admin/:id', async (req, res) => {
         try {
             const id=new ObjectId(req.params.id)
@@ -224,7 +224,7 @@ startServer().then(({collection1, collection2, collection3}) => {
     process.exit(1) // Quitter le processus avec un code d'erreur
 })
 //Supprime les données d'un token 
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.delete('/api/KeyRC/token/:id', async (req, res) => {
         try {
             const id=new ObjectId(req.params.id)
@@ -240,7 +240,7 @@ startServer().then(({collection1, collection2, collection3}) => {
     process.exit(1) // Quitter le processus avec un code d'erreur
 })
 //Supprime les données d'une serrure 
-startServer().then(({collection1, collection2, collection3}) => {
+startServer(database).then(({collection1, collection2, collection3}) => {
     app.delete('/api/KeyRC/lock/:id', async (req, res) => {
         try {
             const id=new ObjectId(req.params.id)
@@ -257,7 +257,7 @@ startServer().then(({collection1, collection2, collection3}) => {
 })
 
 // Récupère le dernier token généré 
-startServer().then(({collection, collection2, collection3}) => {
+startServer(database).then(({collection, collection2, collection3}) => {
     app.get('/receive_ip', async (req, res) => {
         try {
             const esp32IP = req.body.ip
