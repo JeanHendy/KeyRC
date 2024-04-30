@@ -32,7 +32,7 @@ The backend API provides the following endpoints:
 
 - `POST /api/KeyRC/admin`: Add a new administrator to the database.
 - `POST /api/KeyRC/lock/:id`: Add a new lock to the database.
-- `POST /api/KeyRC/token/:id`: Add a new token to the database.
+- `POST /generate-token`: Add a new token to the database.
 - `GET /api/KeyRC/all-stuff`: Retrieve all data from the database.
 - `GET /api/KeyRC/stuff/:id`: Retrieve data for a specific administrator.
 - `PUT /api/KeyRC/admin/:id`: Update administrator information.
@@ -41,6 +41,7 @@ The backend API provides the following endpoints:
 - `DELETE /api/KeyRC/admin/:id`: Delete an administrator from the database.
 - `DELETE /api/KeyRC/token/:id`: Delete a token from the database.
 - `DELETE /api/KeyRC/lock/:id`: Delete a lock from the database.
+- `GET /receive_ip`: Retrieve the last token generated.
 
 ## Testing
 
