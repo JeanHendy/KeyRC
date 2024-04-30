@@ -2,23 +2,38 @@ const {MongoClient}=require('mongodb')
 
 async function connectToDatabase(url, dbName) {
     try {
-        // Se connecter à la base de données
+        //Se connecte à la base de données
         const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true })
         await client.connect()
         console.log('Connexion à MongoDB réussie')
 
-        // Sélectionner la base de données
-        const db = client.db(dbName)
+        //Sélectionne la base de données
+        const database = client.db(dbName)
 
-        return db // Retourner l'objet de connexion à la base de données
+        return database // Retourner l'objet de connexion à la base de données
     } catch (error) {
         console.error('Erreur de connexion à MongoDB', error)
         throw error // Lancer une erreur si la connexion échoue
     }
 }
 
-async function startServer(){
-    const database= await connectToDatabase('mongodb://localhost:27017', 'KeyRC')
+//Connexion à la base de données
+connectToDatabase('mongodb://localhost:27017', 'KeyRC')
+    .then(database => {
+        //Une fois la connexion établie, le serveur se lance
+        startServer(database).then(() => {
+            console.log('Serveur démarré avec succès');
+        }).catch(error => {
+            console.error("Erreur lors du démarrage du serveur :", error);
+            process.exit(1);
+        });
+    })
+    .catch(error => {
+        console.error('Erreur de connexion à la base de données MongoDB', error);
+        process.exit(1);
+    });
+
+async function startServer(database){
     const collection1=database.collection('Administrators')
     const collection2=database.collection('Locks')
     const collection3=database.collection('Tokens')
